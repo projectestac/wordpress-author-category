@@ -28,8 +28,12 @@ if (!class_exists('Author_category_panel')){
 
 		public function add_meta_boxes(){
 			add_meta_box( 'save_sidebar', __('Save changes',$this->txtD), array($this,'savec'), __FILE__, 'side','low');
-			add_meta_box( 'Credit_sidebar', __('Credits',$this->txtD), array($this,'credits'), __FILE__, 'side','low');
-			add_meta_box( 'News', __('Latest From Bainternet',$this->txtD), array($this,'news'), __FILE__, 'side','low');
+
+			// XTEC ************ Block access to plugin management info to all users but not xtecadmin - 2018-07-13 @nacho
+			if (is_xtec_super_admin()) {
+                add_meta_box( 'Credit_sidebar', __('Credits',$this->txtD), array($this,'credits'), __FILE__, 'side','low');
+                add_meta_box( 'News', __('Latest From Bainternet',$this->txtD), array($this,'news'), __FILE__, 'side','low');
+            }
 			add_meta_box( 'main_settings', __('Author category settings',$this->txtD), array($this,'main_settings'), __FILE__, 'normal','low');
 		}
 
