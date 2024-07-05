@@ -457,3 +457,21 @@ if (!class_exists('author_category')){
 if (is_admin()){
     $ac = new author_category();
 }
+
+// XTEC ************ AFEGIT - Added support for Gutenberg.
+// 2024.07.05 @aginard
+add_action('enqueue_block_editor_assets', function () {
+
+    $current_user = wp_get_current_user();
+    $cat = get_user_meta($current_user->ID,'_author_cat',true);
+
+    if (!empty($cat)) {
+        wp_enqueue_script(
+            'author-cat-block-script',
+            plugins_url('javascript/disable_categories_in_editor.js', __FILE__),
+            ['wp-blocks', 'wp-dom-ready', 'wp-edit-post']
+        );
+    }
+
+});
+// ************ FI
