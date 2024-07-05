@@ -116,7 +116,16 @@ if (!class_exists('author_category')){
          */
         public function user_default_category_option($false){
             $cat = $this->get_user_cat();
+
+            // XTEC ************ MODIFICAT - Fixed compatibility with PHP 8.1.
+            // 2024.07.05 @aginard
+            if (!empty($cat)) {
+            // ************ ORIGINAL
+            /*
             if (!empty($cat) && count($cat) > 0){
+             */
+            // ************ FI
+
                 return $cat;
             }
             return false;
@@ -170,16 +179,26 @@ if (!class_exists('author_category')){
          */
         public function remove_quick_edit(){
            global $current_user;
+
             // XTEC ************ MODIFICAT - Added to avoid some debug warnings
             // 2021.06.03 @nacho
             $current_user = wp_get_current_user();
-            //************ ORIGINAL
+            // ************ ORIGINAL
             /*
             get_currentuserinfo();
             */
-            //************ FI
+            // ************ FI
             $cat = $this->get_user_cat($current_user->ID);
+
+            // XTEC ************ MODIFICAT - Fixed compatibility with PHP 8.1.
+            // 2024.07.05 @aginard
+            if (!empty($cat)) {
+            // ************ ORIGINAL
+            /*
             if (!empty($cat) && count($cat) > 0){
+             */
+            // ************ FI
+
                 echo '<style>.inline-edit-categories{display: none !important;}</style>';
             }
         }
@@ -192,18 +211,28 @@ if (!class_exists('author_category')){
         public function add_meta_box(){
 
             global $current_user;
+
             // XTEC ************ MODIFICAT - Added to avoid some debug warnings
             // 2021.06.03 @nacho
             $current_user = wp_get_current_user();
-            //************ ORIGINAL
+            // ************ ORIGINAL
             /*
             get_currentuserinfo();
             */
-            //************ FI
+            // ************ FI
 
             //get author categories
             $cat = $this->get_user_cat($current_user->ID);
+
+            // XTEC ************ MODIFICAT - Fixed compatibility with PHP 8.1.
+            // 2024.07.05 @aginard
+            if (!empty($cat)) {
+            // ************ ORIGINAL
+            /*
             if (!empty($cat) && count($cat) > 0){
+             */
+            // ************ FI
+
                 //remove default metabox
                 remove_meta_box('categorydiv', 'post', 'side');
                 //add user specific categories
@@ -227,19 +256,31 @@ if (!class_exists('author_category')){
          */
         public function render_meta_box_content(){
             global $current_user;
+
             // XTEC ************ MODIFICAT - Added to avoid some debug warnings
             // 2021.06.03 @nacho
             $current_user = wp_get_current_user();
-            //************ ORIGINAL
+            // ************ ORIGINAL
             /*
             get_currentuserinfo();
             */
-            //************ FI
+            // ************ FI
+
             $cats = get_user_meta($current_user->ID,'_author_cat',true);
             $cats = (array)$cats;
             // Use nonce for verification
             wp_nonce_field( plugin_basename( __FILE__ ), 'author_cat_noncename' );
+
+            // XTEC ************ MODIFICAT - Fixed compatibility with PHP 8.1.
+            // 2024.07.05 @aginard
+            if (!empty($cats) && count($cats) > 0) {
+            // ************ ORIGINAL
+            /*
             if (!empty($cats) && count($cats) > 0){
+             */
+            // ************ FI
+
+
                 if (count($cats) == 1){
                     $c = get_category($cats[0]);
                     echo __('this will be posted in: <strong>',$this->txtDomain) . $c->name .__('</strong> Category',$this->txtDomain);
@@ -269,14 +310,16 @@ if (!class_exists('author_category')){
             //only admin can see and save the categories
             if ( !current_user_can( 'manage_options' ) ) { return false; }
             global $current_user;
+
             // XTEC ************ MODIFICAT - Added to avoid some debug warnings
             // 2021.06.03 @nacho
             $current_user = wp_get_current_user();
-            //************ ORIGINAL
+            // ************ ORIGINAL
             /*
             get_currentuserinfo();
             */
-            //************ FI
+            // ************ FI
+
             if ($current_user->ID == $user->ID) { return false; }
             $select = wp_dropdown_categories(array(
                             'orderby'      => 'name',
@@ -343,18 +386,29 @@ if (!class_exists('author_category')){
         public function get_user_cat($user_id = null){
             if ($user_id === null){
                 global $current_user;
+
                 // XTEC ************ MODIFICAT - Added to avoid some debug warnings
                 // 2021.06.03 @nacho
                 $current_user = wp_get_current_user();
-                //************ ORIGINAL
+                // ************ ORIGINAL
                 /*
                 get_currentuserinfo();
                 */
-                //************ FI
+                // ************ FI
+
                 $user_id = $current_user->ID;
             }
             $cat = get_user_meta($user_id,'_author_cat',true);
+
+            // XTEC ************ MODIFICAT - Fixed compatibility with PHP 8.1.
+            // 2024.07.05 @aginard
+            if (empty($cat) || !is_array($cat))
+            // ************ ORIGINAL
+            /*
             if (empty($cat) || count($cat) <= 0 || !is_array($cat))
+             */
+            // ************ FI
+
                 return 0;
             else
                 return $cat[0];
